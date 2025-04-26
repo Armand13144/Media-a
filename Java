@@ -1,0 +1,85 @@
+// Mock user data
+let currentUser = "Guest";
+let posts = [
+    { 
+        id: 1, 
+        user: "ZizzTeam", 
+        content: "Welcome to Zizz! Post something awesome!", 
+        likes: 10, 
+        time: "Just now" 
+    }
+];
+
+// DOM Elements
+const postContent = document.getElementById('post-content');
+const postBtn = document.getElementById('post-btn');
+const feed = document.getElementById('feed');
+const logoutBtn = document.getElementById('logout-btn');
+
+// Render all posts
+function renderPosts() {
+    feed.innerHTML = posts.map(post => `
+        <div class="post" data-id="${post.id}">
+            <div class="post-header">
+                <i class="fas fa-user-circle"></i>
+                <span class="post-user">${post.user}</span>
+                <span class="post-time">${post.time}</span>
+            </div>
+            <div class="post-content">
+                ${post.content}
+            </div>
+            <div class="post-actions">
+                <div class="post-action" onclick="likePost(${post.id})">
+                    <i class="far fa-heart"></i>
+                    <span>${post.likes}</span>
+                </div>
+                <div class="post-action">
+                    <i class="far fa-comment"></i>
+                    <span>0</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Add a new post
+function addPost() {
+    const content = postContent.value.trim();
+    if (content) {
+        const newPost = {
+            id: Date.now(),
+            user: currentUser,
+            content: content,
+            likes: 0,
+            time: "Just now"
+        };
+        posts.unshift(newPost);
+        postContent.value = '';
+        renderPosts();
+    }
+}
+
+// Like a post
+function likePost(postId) {
+    const post = posts.find(p => p.id === postId);
+    if (post) {
+        post.likes++;
+        renderPosts();
+    }
+}
+
+// Event Listeners
+postBtn.addEventListener('click', addPost);
+postContent.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        addPost();
+    }
+});
+
+logoutBtn.addEventListener('click', () => {
+    alert("Logout functionality would go here!");
+});
+
+// Initialize
+renderPosts();
